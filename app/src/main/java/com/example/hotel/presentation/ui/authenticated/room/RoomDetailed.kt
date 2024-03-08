@@ -15,6 +15,7 @@ import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDateRangePickerState
@@ -61,9 +62,9 @@ fun RoomDetail(roomId: Int, ktorApiClient: KtorApiClient, userInfo: UserInfo) {
         verticalArrangement = Arrangement.Center
     ) {
         Roomd(room = hotelRoom, {})
-        Divider(Modifier.padding(10.dp))
+        HorizontalDivider(Modifier.padding(10.dp))
         Sa(dateRangePickerState = dateRangePickerState)
-        Divider(Modifier.padding(10.dp))
+        HorizontalDivider(Modifier.padding(10.dp))
         CustomOutlinedButton(label = "Арендовать") {
             scope.launch {
                 ktorApiClient.rentRoom(
@@ -83,7 +84,7 @@ fun RoomDetail(roomId: Int, ktorApiClient: KtorApiClient, userInfo: UserInfo) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Sa(dateRangePickerState: DateRangePickerState, modifier: Modifier = Modifier) {
+fun Sa(dateRangePickerState: DateRangePickerState) {
     Card(
         Modifier
             .fillMaxWidth()
