@@ -25,9 +25,7 @@ object SharedPreferencesHelper {
     }
 
     fun getIpAddress(): String {
-        return "http://${
-            getSharedPreferences().getString(IP_ADDRESS, "Ip-адрес не указан").toString()
-        }:8080"
+        return getSharedPreferences().getString(IP_ADDRESS, "Ip-адрес не указан").toString()
     }
 
     fun saveIpAddress(value: String) {
