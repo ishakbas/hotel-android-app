@@ -7,13 +7,13 @@ import ru.ktor_koin.network.model.HotelRoomsWithTypesExtended
 import ru.ktor_koin.network.model.Rent
 
 interface RoomsRepository {
-    suspend fun loadRooms(): MutableList<HotelRoom>
+    suspend fun loadRooms(): List<HotelRoom>
     suspend fun loadRoom(id: Int): HotelRoomsWithTypesExtended
     suspend fun rentRoom(rent: Rent): HttpStatusCode
 }
 
 class RoomsRepositoryImpl(private val ktorClient: KtorClient) : RoomsRepository {
-    override suspend fun loadRooms(): MutableList<HotelRoom> {
+    override suspend fun loadRooms(): List<HotelRoom> {
         return ktorClient.loadRooms()
     }
 

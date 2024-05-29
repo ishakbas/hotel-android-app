@@ -5,7 +5,7 @@ import ru.ktor_koin.network.model.HotelRoom
 
 
 data class RoomsState(
-    var roomList: MutableList<HotelRoom> = mutableListOf(),
+    val roomList: List<HotelRoom> = emptyList(),
     val errorState: RoomsErrorState = RoomsErrorState(),
     val isLoading: Boolean = false
 )

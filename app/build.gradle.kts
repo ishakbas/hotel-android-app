@@ -60,17 +60,17 @@ dependencies {
     implementation(project(":network"))
 
     // ktor
-    implementation("io.ktor:ktor-client-core:2.3.9")
+    implementation(libs.ktor.client.core)
 
     // Kotlinx datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+    implementation(libs.kotlinx.datetime)
 
     // DI
-    implementation("io.insert-koin:koin-androidx-compose:3.5.4")
+    implementation(libs.koin.androidx.compose)
     // Glide
-    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation(libs.compose)
     // extended icons
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.5")
+    implementation(libs.androidx.material.icons.extended.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

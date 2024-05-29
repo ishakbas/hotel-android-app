@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,43 +49,41 @@ import ru.hotel.hotel.ui.screens.authenticated.rent.state.RentUiEvent
 import ru.ktor_koin.network.model.HotelRoomsWithTypesExtended
 
 
+//@Composable
+//fun RentScreen(
+//    id: Int,
+//    modifier: Modifier = Modifier,
+//    rentViewModel: RentViewModel
+//) {
+//    val roomInfoState by rentViewModel.selectedRoomState.collectAsState()
+//
+//    rentViewModel.getRoom(id)
+//
+//    RoomContainer(
+//        modifier = modifier,
+//        room = roomInfoState,
+//        rentViewModel = rentViewModel
+//    )
+//}
+
 @Composable
 fun RentScreen(
     id: Int,
     modifier: Modifier = Modifier,
-    rentViewModel: RentViewModel
-) {
-    val roomInfoState by remember {
-        rentViewModel.selectedRoomState
-    }
-    rentViewModel.getRoom(id)
-    RoomContainer(
-        modifier = modifier,
-        room = roomInfoState,
-        rentViewModel = rentViewModel
-    )
-}
-
-@Composable
-fun RoomContainer(
-    modifier: Modifier = Modifier,
     rentViewModel: RentViewModel,
-    room: HotelRoomsWithTypesExtended
 ) {
     val context = LocalContext.current
 
-    val rentSuccess by remember {
-        mutableStateOf(rentViewModel.rentState.value.isRentSuccess)
-    }
-    val rentError by remember {
-        mutableStateOf(rentViewModel.rentState.value.hasError)
-    }
+    val rentRoomState by rentViewModel.rentState.collectAsState()
+    val room by rentViewModel.selectedRoomState.collectAsState()
 
-    if (rentError) {
+    rentViewModel.getRoom(id)
+
+    if (rentRoomState.hasError) {
         Toast.makeText(context, "Ошибка. Повторите попытку", Toast.LENGTH_SHORT).show()
     }
 
-    if (rentSuccess) {
+    if (rentRoomState.isRentSuccess) {
         Toast.makeText(context, "Комната успешно арендована", Toast.LENGTH_SHORT).show()
     }
 

@@ -21,8 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,11 +39,10 @@ import ru.ktor_koin.network.model.HotelRoom
 @Composable
 fun RoomsScreen(
     modifier: Modifier = Modifier,
-    roomScreenViewModel: RoomsViewModel, onCardClick: (Int) -> Unit
+    roomScreenViewModel: RoomsViewModel,
+    onCardClick: (Int) -> Unit
 ) {
-    val roomsState by remember {
-        roomScreenViewModel.roomsState
-    }
+    val roomsState by roomScreenViewModel.roomsState.collectAsState()
 
     Box(modifier.fillMaxSize()) {
         if (roomsState.isLoading) {
@@ -67,7 +66,7 @@ fun RoomsScreen(
 @Composable
 fun RoomList(
     modifier: Modifier = Modifier,
-    list: MutableList<HotelRoom>,
+    list: List<HotelRoom>,
     onCardClick: (Int) -> Unit
 ) {
     LazyColumn(
@@ -77,10 +76,9 @@ fun RoomList(
     ) {
         items(items = list, key = { it.id }) { room ->
             GlideSubcomposition(model = room.roomImage) {
+
                 when (state) {
-
-                    is RequestState.Loading -> CircularProgressIndicator()
-
+                    is RequestState.Loading -> {}
                     is RequestState.Failure -> Icon(Icons.Filled.Warning, null)
                     is RequestState.Success -> RoomCard(room = room, onCardClick = onCardClick)
                 }
