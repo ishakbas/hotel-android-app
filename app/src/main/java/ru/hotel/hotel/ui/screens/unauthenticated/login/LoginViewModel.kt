@@ -65,14 +65,18 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
                                         admin = false
                                     )
                                 )
-                            when (result.status) {
-                                HttpStatusCode.Found -> {
-                                    onUiEvent(LoginUiEvent.OnUserFound)
-                                    SharedPreferencesHelper.saveUserId(result.body<UserInfo>().id)
-                                }
+                            if (result != null) {
+                                when (result.status) {
+                                    HttpStatusCode.Found -> {
+                                        onUiEvent(LoginUiEvent.OnUserFound)
+                                        SharedPreferencesHelper.saveUserId(result.body<UserInfo>().id)
+                                    }
 
-                                HttpStatusCode.NotFound -> onUiEvent(LoginUiEvent.OnUserNotFound)
-                                HttpStatusCode.InternalServerError -> onUiEvent(LoginUiEvent.OnServerError)
+                                    HttpStatusCode.NotFound -> onUiEvent(LoginUiEvent.OnUserNotFound)
+                                    HttpStatusCode.InternalServerError -> onUiEvent(LoginUiEvent.OnServerError)
+                                }
+                            } else {
+                                onUiEvent(LoginUiEvent.OnServerError)
                             }
                         }
                     }
