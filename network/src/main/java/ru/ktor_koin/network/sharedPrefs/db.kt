@@ -6,8 +6,11 @@ import androidx.core.content.edit
 
 object SharedPreferencesHelper {
     const val IP_ADDRESS = "ip_address"
-    const val USER_ID = "user_id"
-    const val ROOM_ID = "room_id"
+    private const val USER_ID = "user_id"
+    private const val USER_NAME = "user_name"
+    private const val IS_USER_ADMIN = "is_user_admin"
+    private const val ROOM_ID = "room_id"
+
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -40,8 +43,28 @@ object SharedPreferencesHelper {
         }
     }
 
+    fun getUserAdmin(): Boolean {
+        return getSharedPreferences().getBoolean(IS_USER_ADMIN, false)
+    }
+
+    fun saveUserAdmin(value: Boolean) {
+        getSharedPreferences().edit {
+            putBoolean(IS_USER_ADMIN, value)
+        }
+    }
+
     fun getUserId(): Int {
         return getSharedPreferences().getInt(USER_ID, 0)
+    }
+
+    fun saveUserName(value: String) {
+        getSharedPreferences().edit {
+            putString(USER_NAME, value)
+        }
+    }
+
+    fun getUserName(): String? {
+        return getSharedPreferences().getString(USER_NAME, "None")
     }
 
     fun saveRoomId(value: Int) {
