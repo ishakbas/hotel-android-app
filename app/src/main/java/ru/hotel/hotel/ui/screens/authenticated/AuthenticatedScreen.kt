@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -120,15 +119,6 @@ fun AuthenticatedScreen(
 @Composable
 private fun TopBar(modifier: Modifier = Modifier) {
     Box(modifier) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Outlined.Logout,
-            contentDescription = null,
-            modifier = Modifier
-                .align(
-                    Alignment.CenterStart
-                )
-                .size(32.dp)
-        )
         Text(
             text = "Номера",
             style = MaterialTheme.typography.headlineLarge,

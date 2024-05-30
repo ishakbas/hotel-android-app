@@ -20,10 +20,12 @@ import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
@@ -48,23 +50,6 @@ import kotlinx.datetime.toLocalDateTime
 import ru.hotel.hotel.ui.screens.authenticated.rent.state.RentUiEvent
 import ru.ktor_koin.network.model.HotelRoomsWithTypesExtended
 
-
-//@Composable
-//fun RentScreen(
-//    id: Int,
-//    modifier: Modifier = Modifier,
-//    rentViewModel: RentViewModel
-//) {
-//    val roomInfoState by rentViewModel.selectedRoomState.collectAsState()
-//
-//    rentViewModel.getRoom(id)
-//
-//    RoomContainer(
-//        modifier = modifier,
-//        room = roomInfoState,
-//        rentViewModel = rentViewModel
-//    )
-//}
 
 @Composable
 fun RentScreen(
@@ -102,11 +87,13 @@ fun RentInfo(rentViewModel: RentViewModel, modifier: Modifier = Modifier) {
     val dialogState = remember {
         mutableStateOf(false)
     }
+
     val dateState =
         rememberDateRangePickerState(
             initialSelectedStartDateMillis = System.currentTimeMillis(),
             initialSelectedEndDateMillis = System.currentTimeMillis(),
-            yearRange = 2024..2024
+            yearRange = 2024..2024,
+            initialDisplayMode = DisplayMode.Input
         )
     val startDate = dateState.selectedStartDateMillis?.let { Instant.fromEpochMilliseconds(it) }
         ?.toLocalDateTime(
@@ -138,7 +125,23 @@ fun RentInfo(rentViewModel: RentViewModel, modifier: Modifier = Modifier) {
 
     if (dialogState.value) {
         Dialog(onDismissRequest = { dialogState.value = false }) {
-            DateRangePicker(state = dateState)
+            Surface(
+                tonalElevation = 6.dp,
+                modifier = Modifier.padding(6.dp),
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Column {
+                    DateRangePicker(state = dateState)
+                    Button(
+                        onClick = { dialogState.value = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp)
+                    ) {
+                        Text(text = "Закрыть")
+                    }
+                }
+            }
         }
     }
 }
