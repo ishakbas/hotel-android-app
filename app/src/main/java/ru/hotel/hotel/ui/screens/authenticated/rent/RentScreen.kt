@@ -128,7 +128,8 @@ fun RentInfo(rentViewModel: RentViewModel, modifier: Modifier = Modifier) {
             Surface(
                 tonalElevation = 6.dp,
                 modifier = Modifier.padding(6.dp),
-                shape = MaterialTheme.shapes.extraLarge
+                shape = MaterialTheme.shapes.extraLarge,
+                color = MaterialTheme.colorScheme.background
             ) {
                 Column {
                     DateRangePicker(state = dateState)
