@@ -28,6 +28,7 @@ interface KtorClient {
     suspend fun loadRooms(): MutableList<HotelRoom>
     suspend fun loadRoom(id: Int): HotelRoomsWithTypesExtended
     suspend fun rentRoom(rent: Rent): HttpStatusCode
+    suspend fun uploadRoom(room: HotelRoom): HttpStatusCode
 }
 
 
@@ -99,6 +100,19 @@ class KtorClientImpl : KtorClient {
                 contentType(ContentType.Application.Json)
             }.status
         } catch (ex: Exception) {
+            HttpStatusCode.InternalServerError
+        }
+    }
+
+    override suspend fun uploadRoom(room: HotelRoom): HttpStatusCode {
+        return try {
+            val post = client.post("${SharedPreferencesHelper.getIpAddress()}$ROOM") {
+                contentType(ContentType.Application.Json)
+                setBody(room)
+            }
+            post.status
+        } catch (ex: Exception) {
+            Log.d(TAG, "uploadRoom: ${ex.message}")
             HttpStatusCode.InternalServerError
         }
     }

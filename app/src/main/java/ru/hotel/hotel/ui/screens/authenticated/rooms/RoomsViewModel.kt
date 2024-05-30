@@ -33,7 +33,7 @@ class RoomsViewModel(private val roomsRepository: RoomsRepository) : ViewModel()
                 roomsState.value.copy(errorState = RoomsErrorState(connectionErrorState = serverErrorState))
         }
     }
-
+    
     private fun loadRooms() = viewModelScope.launch {
         try {
             val rooms = withContext(Dispatchers.IO) { roomsRepository.loadRooms() }

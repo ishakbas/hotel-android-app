@@ -6,6 +6,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import ru.hotel.hotel.ui.screens.authenticated.profile.ProfileScreenViewModel
 import ru.hotel.hotel.ui.screens.authenticated.rent.RentViewModel
 import ru.hotel.hotel.ui.screens.authenticated.rooms.RoomsViewModel
 import ru.hotel.hotel.ui.screens.unauthenticated.login.LoginViewModel
@@ -32,6 +33,7 @@ class MainApplication : Application() {
             viewModel { RegistrationViewModel(get()) }
             viewModel { RoomsViewModel(get()) }
             viewModel { RentViewModel(get()) }
+            viewModel { ProfileScreenViewModel() }
         }
 
         startKoin {
