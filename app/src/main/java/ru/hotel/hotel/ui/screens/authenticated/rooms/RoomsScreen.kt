@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,9 +41,26 @@ import ru.ktor_koin.network.model.HotelRoom
 fun RoomsScreen(
     modifier: Modifier = Modifier,
     roomScreenViewModel: RoomsViewModel,
+    searchState: MutableState<String>,
     onCardClick: (Int) -> Unit
 ) {
     val roomsState by roomScreenViewModel.roomsState.collectAsState()
+    val searchedText = searchState.value
+
+    val filteredRooms: List<HotelRoom> =
+        if (searchedText.isEmpty()) roomsState.roomList else {
+            val resultList: ArrayList<HotelRoom> = ArrayList()
+
+            for (room in roomsState.roomList) {
+                if (room.name.lowercase(java.util.Locale.ROOT)
+                        .contains(searchedText.lowercase(java.util.Locale.ROOT))
+                ) {
+                    resultList.add(room)
+                }
+            }
+            resultList
+        }
+
 
     Box(modifier.fillMaxSize()) {
         if (roomsState.isLoading) {
@@ -55,7 +73,7 @@ fun RoomsScreen(
         } else {
             RoomList(
                 modifier = Modifier.fillMaxSize(),
-                list = roomsState.roomList,
+                list = filteredRooms,
                 onCardClick = onCardClick
             )
         }

@@ -2,6 +2,7 @@ package ru.hotel.hotel.ui.screens.authenticated
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,16 +11,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,6 +42,7 @@ import ru.hotel.hotel.ui.navigation.ID_KEY
 import ru.hotel.hotel.ui.navigation.NavItems
 import ru.hotel.hotel.ui.navigation.NavRoutes
 import ru.hotel.hotel.ui.screens.authenticated.profile.ProfileScreen
+import ru.hotel.hotel.ui.screens.authenticated.profile.ProfileScreenViewModel
 import ru.hotel.hotel.ui.screens.authenticated.rent.RentScreen
 import ru.hotel.hotel.ui.screens.authenticated.rent.RentViewModel
 import ru.hotel.hotel.ui.screens.authenticated.rooms.RoomsScreen
@@ -45,16 +53,20 @@ import ru.ktor_koin.network.sharedPrefs.SharedPreferencesHelper
 @Composable
 fun AuthenticatedScreen(
     roomsViewModel: RoomsViewModel = koinViewModel(),
-    rentViewModel: RentViewModel = koinViewModel()
+    rentViewModel: RentViewModel = koinViewModel(),
+    profileScreenViewModel: ProfileScreenViewModel = koinViewModel()
 ) {
     val navController = rememberNavController()
-
+    val searchTextState = remember {
+        mutableStateOf("")
+    }
     Scaffold(
         topBar = {
             TopBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(10.dp),
+                searchState = searchTextState
             )
         },
         bottomBar = {
@@ -90,6 +102,7 @@ fun AuthenticatedScreen(
             composable(NavRoutes.Authenticated.Rooms.route) {
                 RoomsScreen(
                     roomScreenViewModel = roomsViewModel,
+                    searchState = searchTextState,
                     modifier = Modifier.fillMaxSize()
                 ) { receivedId ->
                     navController.navigate(NavRoutes.Authenticated.Room.passId(receivedId)) {
@@ -110,37 +123,69 @@ fun AuthenticatedScreen(
                 )
             }
             composable(NavRoutes.Authenticated.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(profileScreenViewModel)
             }
         }
     }
 }
 
 @Composable
-private fun TopBar(modifier: Modifier = Modifier) {
+private fun TopBar(modifier: Modifier = Modifier, searchState: MutableState<String>) {
+    val textFieldVisibility = remember {
+        mutableStateOf(false)
+    }
+
     Box(modifier) {
-        Text(
-            text = "Номера",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.align(Alignment.Center)
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.align(
-                Alignment.CenterEnd
+        AnimatedVisibility(visible = textFieldVisibility.value) {
+            TextField(
+                value = searchState.value,
+                onValueChange = { value -> searchState.value = value },
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null
+                    )
+                },
+                trailingIcon = {
+                    if (searchState.value != "") {
+                        IconButton(onClick = {
+                            searchState.value = ""
+                            textFieldVisibility.value = false
+                        }) {
+                            Icon(imageVector = Icons.Default.Close, contentDescription = null)
+                        }
+                    }
+                }
             )
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = null,
-                modifier = Modifier.size(32.dp)
+        }
+
+        AnimatedVisibility(visible = !textFieldVisibility.value) {
+            Text(
+                text = "Номера",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.align(Alignment.Center)
             )
-            Icon(
-                imageVector = Icons.Filled.FilterAlt,
-                contentDescription = null,
-                modifier = Modifier.size(32.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.align(
+                    Alignment.CenterEnd
+                )
+            ) {
+                IconButton(onClick = { textFieldVisibility.value = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Filled.FilterAlt,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
     }
 }
