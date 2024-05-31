@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     // Glide
     implementation(libs.compose)
+    annotationProcessor(libs.compiler)
     // extended icons
     implementation(libs.androidx.material.icons.extended.android)
 

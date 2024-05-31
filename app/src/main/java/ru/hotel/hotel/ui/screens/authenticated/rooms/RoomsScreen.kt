@@ -13,11 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.compose.GlideSubcomposition
-import com.bumptech.glide.integration.compose.RequestState
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import ru.hotel.hotel.ui.screens.authenticated.rooms.state.RoomsUiEvent
 import ru.ktor_koin.network.model.HotelRoom
 
@@ -80,39 +77,39 @@ fun RoomsScreen(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun RoomList(
     modifier: Modifier = Modifier,
     list: List<HotelRoom>,
     onCardClick: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+    val requestManager = Glide.with(context)
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(6.dp),
         contentPadding = PaddingValues(6.dp),
         modifier = modifier.padding(8.dp)
     ) {
-        items(items = list, key = { it.id }) { room ->
-            GlideSubcomposition(model = room.roomImage) {
-
-                when (state) {
-                    is RequestState.Loading -> {}
-                    is RequestState.Failure -> Icon(Icons.Filled.Warning, null)
-                    is RequestState.Success -> RoomCard(room = room, onCardClick = onCardClick)
-                }
-            }
+        items(items = list) { room ->
+            RoomCard(item = room, onCardClick = onCardClick, requestManager = requestManager)
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun RoomCard(room: HotelRoom, onCardClick: (Int) -> Unit, modifier: Modifier = Modifier) {
+private fun RoomCard(
+    item: HotelRoom,
+    onCardClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    requestManager: RequestManager
+) {
     Card(modifier = modifier
         .fillMaxWidth()
         .heightIn(min = 150.dp, max = 300.dp)
         .clickable {
-            onCardClick(room.id)
+            onCardClick(item.id)
         }) {
         Column(
             Modifier
@@ -120,7 +117,7 @@ private fun RoomCard(room: HotelRoom, onCardClick: (Int) -> Unit, modifier: Modi
                 .fillMaxWidth()
         ) {
             GlideImage(
-                model = room.roomImage,
+                model = item.roomImage,
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(200.dp)
@@ -128,11 +125,17 @@ private fun RoomCard(room: HotelRoom, onCardClick: (Int) -> Unit, modifier: Modi
                 contentScale = ContentScale.FillBounds,
                 contentDescription = null
             ) {
-                it.override(400).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                it
+                    .thumbnail(
+                        requestManager
+                            .asDrawable()
+                            .load(item.roomImage)
+                            .override(400)
+                    )
             }
-            Text(text = room.name, style = MaterialTheme.typography.headlineMedium)
+            Text(text = item.name, style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Тип комнаты: ${room.roomType}",
+                text = "Тип комнаты: ${item.roomType}",
                 style = MaterialTheme.typography.labelLarge
             )
         }

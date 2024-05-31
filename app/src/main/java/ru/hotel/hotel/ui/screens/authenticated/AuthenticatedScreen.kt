@@ -2,7 +2,6 @@ package ru.hotel.hotel.ui.screens.authenticated
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -131,16 +130,19 @@ fun AuthenticatedScreen(
 
 @Composable
 private fun TopBar(modifier: Modifier = Modifier, searchState: MutableState<String>) {
+
     val textFieldVisibility = remember {
         mutableStateOf(false)
     }
 
     Box(modifier) {
-        AnimatedVisibility(visible = textFieldVisibility.value) {
+        if (textFieldVisibility.value) {
             TextField(
                 value = searchState.value,
                 onValueChange = { value -> searchState.value = value },
                 modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -148,19 +150,17 @@ private fun TopBar(modifier: Modifier = Modifier, searchState: MutableState<Stri
                     )
                 },
                 trailingIcon = {
-                    if (searchState.value != "") {
-                        IconButton(onClick = {
-                            searchState.value = ""
-                            textFieldVisibility.value = false
-                        }) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = null)
-                        }
+                    IconButton(onClick = {
+                        searchState.value = ""
+                        textFieldVisibility.value = false
+                    }) {
+                        Icon(imageVector = Icons.Default.Close, contentDescription = null)
                     }
+
                 }
             )
-        }
+        } else {
 
-        AnimatedVisibility(visible = !textFieldVisibility.value) {
             Text(
                 text = "Номера",
                 style = MaterialTheme.typography.headlineLarge,
