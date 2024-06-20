@@ -43,6 +43,8 @@ data class HotelRoomsWithTypesExtended(
     @SerialName("room_image")
     val roomImage: ByteArray? = null,
     val roomTypeName: String = "",
+    @SerialName("room_price")
+    val roomPrice: Int = 0,
     val description: String? = null,
     @SerialName("bed_count")
     val bedCount: Int? = null,

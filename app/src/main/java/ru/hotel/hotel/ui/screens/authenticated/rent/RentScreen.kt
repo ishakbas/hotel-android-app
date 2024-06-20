@@ -160,6 +160,7 @@ fun RoomInfo(
         ) {
             Text(text = "Описание: ", style = MaterialTheme.typography.bodyLarge)
             Text(text = roomInfo.description.toString())
+            Text(text = "Цена: ${roomInfo.roomPrice}")
             Spacer(modifier = Modifier.height(10.dp))
             RowIconInfo(
                 text = "Количество комнат: ${roomInfo.bedCount}",
