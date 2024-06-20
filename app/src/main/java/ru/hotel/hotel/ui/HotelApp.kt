@@ -37,7 +37,6 @@ fun HotelApp(
                 onLogin = {
                     navController.navigate(NavRoutes.Authenticated.AuthScreen.route) { popUpTo(0) }
                 },
-                onRegister = {},
             )
             authenticatedGraph()
         }

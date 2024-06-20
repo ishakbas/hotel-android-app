@@ -13,7 +13,6 @@ fun NavGraphBuilder.unauthenticatedGraph(
     onLogin: () -> Unit,
     onNavigateToRegistration: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onRegister: () -> Unit
 ) {
     navigation(
         route = NavRoutes.Unauthenticated.NavigationRoute.route,
